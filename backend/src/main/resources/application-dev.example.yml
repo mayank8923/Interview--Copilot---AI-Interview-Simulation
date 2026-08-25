@@ -1,0 +1,13 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb+srv://<username>:<password>@cluster0.example.mongodb.net/interview_copilot_dev?retryWrites=true&w=majority}
+      auto-index-creation: true
+
+logging:
+  level:
+    root: INFO
+    com.interviewcopilot: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    org.springframework.security: INFO
+
