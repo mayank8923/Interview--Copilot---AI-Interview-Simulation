@@ -39,6 +39,11 @@ axiosClient.interceptors.response.use(
       localStorage.removeItem('accessToken');
     }
 
+    // Handle 429 Too Many Requests (Rate Limiting)
+    if (error.response && error.response.status === 429) {
+      alert(error.response.data?.message || 'You have exceeded the maximum number of requests. Please wait a moment and try again.');
+    }
+
     const message = error.response?.data?.message || error.message || 'An unexpected error occurred';
     return Promise.reject({
       status: error.response?.status,

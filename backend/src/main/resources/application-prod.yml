@@ -4,8 +4,13 @@ spring:
       uri: ${MONGODB_URI}
       auto-index-creation: false
 
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
 logging:
   level:
-    root: WARN
+    root: INFO
     com.interviewcopilot: INFO
-

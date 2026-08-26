@@ -3,7 +3,8 @@ package com.interviewcopilot.service;
 import com.interviewcopilot.controller.dto.DashboardAnalyticsResponse;
 import com.interviewcopilot.model.MockInterviewSession;
 import com.interviewcopilot.model.ResumeAnalysis;
-import com.interviewcopilot.repository.MockInterviewRepository;
+import com.interviewcopilot.model.EvaluationReport;
+import com.interviewcopilot.repository.EvaluationReportRepository;
 import com.interviewcopilot.repository.ResumeAnalysisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class AnalyticsService {
 
-    private final MockInterviewRepository mockInterviewRepository;
+    private final EvaluationReportRepository evaluationReportRepository;
     private final ResumeAnalysisRepository resumeAnalysisRepository;
 
     public DashboardAnalyticsResponse getUserAnalytics(String userId) {
@@ -26,13 +27,11 @@ public class AnalyticsService {
         Optional<ResumeAnalysis> latestResume = resumeAnalysisRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
         int resumeScore = latestResume.map(ResumeAnalysis::getMatchScore).orElse(0);
 
-        // 2. Fetch completed mock interviews
-        List<MockInterviewSession> completedMocks = mockInterviewRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
-                .filter(session -> session.getStatus() == MockInterviewSession.SessionStatus.COMPLETED && session.getOverallScore() > 0)
-                .toList();
+        // 2. Fetch completed mock interviews reports
+        List<EvaluationReport> reports = evaluationReportRepository.findByUserId(userId);
 
-        int totalMocks = completedMocks.size();
-        int avgMock = totalMocks > 0 ? (int) completedMocks.stream().mapToInt(MockInterviewSession::getOverallScore).average().orElse(0) : 0;
+        int totalMocks = reports.size();
+        int avgMock = totalMocks > 0 ? (int) reports.stream().mapToInt(EvaluationReport::getOverallScore).average().orElse(0) : 0;
 
         // 3. Mock practice score (until we build a full Practice DB model for submissions)
         // For now, we will simulate the practice score to ensure the dashboard works seamlessly
