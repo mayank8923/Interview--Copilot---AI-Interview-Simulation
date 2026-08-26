@@ -15,12 +15,12 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    @org.springframework.beans.factory.annotation.Value("${spring.mail.username:noreply@interviewcopilot.com}")
+    @org.springframework.beans.factory.annotation.Value("${spring.mail.username:vashisthamayank8@gmail.com}")
     private String fromEmail;
 
     @Async
     public void sendVerificationEmail(String to, String otp) {
-        log.info("\n\n==============================================\nVERIFICATION CODE FOR {}: {}\n==============================================\n", to, otp);
+        log.info("\n\n==============================================\nVERIFICATION CODE FOR {}: {}\nFROM: {}\n==============================================\n", to, otp, fromEmail);
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
