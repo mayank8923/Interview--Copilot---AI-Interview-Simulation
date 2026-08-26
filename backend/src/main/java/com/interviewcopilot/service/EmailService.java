@@ -20,6 +20,7 @@ public class EmailService {
 
     @Async
     public void sendVerificationEmail(String to, String otp) {
+        log.info("\n\n==============================================\nVERIFICATION CODE FOR {}: {}\n==============================================\n", to, otp);
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
@@ -34,11 +35,12 @@ public class EmailService {
                           
             message.setText(text);
             mailSender.send(message);
-            log.info("Successfully sent verification email to: {}", to);
+            log.info("Successfully sent verification email via SMTP to: {}", to);
         } catch (Exception e) {
-            log.error("Failed to send email to: {}. Did you configure your SMTP credentials in application.yml?", to, e);
-            // Intentionally not throwing an exception here so that local development 
-            // without SMTP credentials doesn't completely break registration.
+            log.error("SMTP DISPATCH FAILED for {}: {} ({})", to, e.getMessage(), e.getClass().getSimpleName());
+            if (e.getCause() != null) {
+                log.error("SMTP Root Cause: {}", e.getCause().getMessage());
+            }
         }
     }
 }
