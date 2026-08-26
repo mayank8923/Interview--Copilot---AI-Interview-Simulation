@@ -22,6 +22,9 @@ public class Question {
     private String content;
     private String type; // e.g., TECHNICAL, HR, SYSTEM_DESIGN
     private String difficulty; // EASY, MEDIUM, HARD
+    private String targetCompany; // e.g., Google, Amazon, General
+    private String topic; // e.g., Arrays, Trees, System Design, Leadership
+    private boolean aiGenerated;
     private List<String> tags;
 }
 

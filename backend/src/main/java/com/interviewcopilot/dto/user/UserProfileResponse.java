@@ -15,9 +15,15 @@ public class UserProfileResponse {
     private String name;
     private String targetRole;
     private String targetCompany;
-    private String experienceLevel;
     private List<String> skillsList;
     private String preferredLanguage;
+
+    // Profiling fields
+    private String educationLevel;
+    private String experienceLevel;
+    private Integer yearsOfExperience;
+    private String currentYear;
+    private String branch;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -28,7 +34,11 @@ public class UserProfileResponse {
                 .name(user.getName())
                 .targetRole(user.getTargetRole())
                 .targetCompany(user.getTargetCompany())
+                .educationLevel(user.getEducationLevel())
                 .experienceLevel(user.getExperienceLevel())
+                .yearsOfExperience(user.getYearsOfExperience())
+                .currentYear(user.getCurrentYear())
+                .branch(user.getBranch())
                 .skillsList(user.getSkillsList())
                 .preferredLanguage(user.getPreferredLanguage())
                 .createdAt(user.getCreatedAt())

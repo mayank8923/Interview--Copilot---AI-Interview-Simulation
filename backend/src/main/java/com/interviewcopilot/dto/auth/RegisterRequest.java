@@ -10,6 +10,13 @@ public class RegisterRequest {
     @NotBlank(message = "Name is required")
     private String name;
 
+    // New Profiling Fields
+    private String educationLevel;
+    private String experienceLevel;
+    private Integer yearsOfExperience;
+    private String currentYear;
+    private String branch;
+
     @NotBlank(message = "Email is required")
     @Email(message = "Email format is not valid")
     private String email;

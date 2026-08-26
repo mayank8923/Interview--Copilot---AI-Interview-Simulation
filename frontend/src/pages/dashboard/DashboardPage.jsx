@@ -129,19 +129,32 @@ export default function DashboardPage() {
         )}
 
         {/* Action Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow cursor-pointer" onClick={() => setIsMockModalOpen(true)}>
             <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-4">
               <Clock className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Timed Mock Session</h3>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Timed Mock</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Simulate a real 30-minute interview environment with adaptive questions.
+              Simulate a 30-min interview.
             </p>
             <span className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
               Start Session <ArrowRight className="w-4 h-4" />
             </span>
           </div>
+
+          <Link to="/chat-interview" className="block bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-4">
+              <Target className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">AI Chat Interview</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              Interactive back-and-forth chat with an AI interviewer.
+            </p>
+            <span className="text-blue-600 dark:text-blue-400 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+              Start Chat <ArrowRight className="w-4 h-4" />
+            </span>
+          </Link>
 
           <Link to="/practice" className="block bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow">
             <div className="w-12 h-12 bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-xl flex items-center justify-center mb-4">

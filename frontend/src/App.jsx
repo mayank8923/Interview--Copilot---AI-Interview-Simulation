@@ -12,6 +12,7 @@ import { PracticeWorkspacePage } from './pages/practice/PracticeWorkspacePage';
 import { InterviewRoomPage } from './pages/mock/InterviewRoomPage';
 import { ReportPage } from './pages/mock/ReportPage';
 import { ResumeScannerPage } from './pages/resume/ResumeScannerPage';
+import { ChatInterviewPage } from './pages/interview/ChatInterviewPage';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import useAuthStore from './store/useAuthStore';
 
@@ -41,6 +42,8 @@ export const App = () => {
               <Route path="/mock/room/:id" element={<InterviewRoomPage />} />
               <Route path="/mock/report/:id" element={<ReportPage />} />
               <Route path="/resume" element={<ResumeScannerPage />} />
+              <Route path="/chat-interview" element={<ChatInterviewPage />} />
+              <Route path="/chat-interview/:id" element={<ChatInterviewPage />} />
             </Route>
           </Routes>
         </main>

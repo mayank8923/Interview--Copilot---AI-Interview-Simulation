@@ -39,6 +39,12 @@ export const QuestionCard = ({ question }) => {
           {question.difficulty}
         </span>
       </div>
+
+      {question.targetCompany && (
+        <span className="inline-flex items-center text-xs font-medium bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-md mb-3 w-fit">
+          {question.targetCompany}
+        </span>
+      )}
       
       <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-6 flex-grow">
         {question.content}

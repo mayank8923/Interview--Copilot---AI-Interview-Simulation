@@ -35,10 +35,16 @@ public class User {
 
     private String targetRole;
     private String targetCompany;
-    private String experienceLevel;
     
     private List<String> skillsList;
     private String preferredLanguage;
+
+    // New Profiling Fields
+    private String educationLevel; // "GRADUATE" or "UNDERGRADUATE"
+    private String experienceLevel; // "FRESHER" or "EXPERIENCED"
+    private Integer yearsOfExperience; // e.g. 3
+    private String currentYear; // e.g. "3rd Year"
+    private String branch; // e.g. "Computer Science"
 
     private Role role;
 

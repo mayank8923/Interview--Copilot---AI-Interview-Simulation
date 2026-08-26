@@ -117,5 +117,38 @@ public class AiEvaluationService {
 
         return Mono.just(analysis);
     }
+
+    public Mono<String> getChatResponse(List<com.interviewcopilot.model.ChatMessage> history, String topic) {
+        // Mock AI chat logic
+        if (history.isEmpty()) {
+            return Mono.just("Hello! I will be your interviewer today. We'll be focusing on " + topic + ". Are you ready to begin with the first question?");
+        }
+        
+        int turnCount = history.size();
+        
+        if (turnCount == 2) {
+            if (topic.toLowerCase().contains("design") || topic.toLowerCase().contains("system")) {
+                return Mono.just("Great. Let's start with a system design question. How would you design a distributed rate limiter? Please outline the high-level architecture.");
+            } else if (topic.toLowerCase().contains("behavioral") || topic.toLowerCase().contains("hr")) {
+                return Mono.just("Excellent. Tell me about a time you had a major disagreement with a team member. How did you resolve it?");
+            } else {
+                return Mono.just("Awesome. Let's start with a coding problem. Given an array of integers, how would you find the longest increasing subsequence in O(n log n) time?");
+            }
+        }
+        
+        if (turnCount == 4) {
+            return Mono.just("That's an interesting approach. Can you explain the trade-offs of your solution? Specifically, what are the time and space complexities?");
+        }
+        
+        if (turnCount == 6) {
+            return Mono.just("I see. What if we scale this up? Suppose the input size is 100x larger, or we have 10,000 concurrent requests. How would your system handle that?");
+        }
+        
+        if (turnCount >= 8) {
+            return Mono.just("That makes sense. We're almost out of time. Do you have any questions for me about the company or the team?");
+        }
+
+        return Mono.just("Could you elaborate a bit more on that last point? I want to make sure I understand your reasoning.");
+    }
 }
 
