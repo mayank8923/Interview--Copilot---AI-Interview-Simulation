@@ -13,6 +13,7 @@ import { InterviewRoomPage } from './pages/mock/InterviewRoomPage';
 import { ReportPage } from './pages/mock/ReportPage';
 import { ResumeScannerPage } from './pages/resume/ResumeScannerPage';
 import { ChatInterviewPage } from './pages/interview/ChatInterviewPage';
+import VerifyEmailPage from './pages/auth/VerifyEmailPage';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import useAuthStore from './store/useAuthStore';
 
@@ -32,12 +33,15 @@ export const App = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
+            
+            {/* Public Teaser Routes */}
+            <Route path="/practice" element={<PracticeCatalogPage />} />
             
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/practice" element={<PracticeCatalogPage />} />
               <Route path="/practice/:id" element={<PracticeWorkspacePage />} />
               <Route path="/mock/room/:id" element={<InterviewRoomPage />} />
               <Route path="/mock/report/:id" element={<ReportPage />} />

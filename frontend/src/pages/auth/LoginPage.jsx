@@ -16,22 +16,24 @@ const LoginPage = () => {
       await login({ email, password });
       navigate('/dashboard');
     } catch (err) {
-      // Error is handled in store
+      if (err.message === "EMAIL_NOT_VERIFIED" || err.response?.data?.message === "EMAIL_NOT_VERIFIED") {
+        navigate('/verify-email', { state: { email } });
+      }
     }
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md border border-slate-100">
+    <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-800 p-8 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 transition-colors">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 dark:text-white">
             Sign in to your account
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4">
-              <p className="text-red-700 text-sm">{error}</p>
+            <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4">
+              <p className="text-red-700 dark:text-red-400 text-sm">{error}</p>
             </div>
           )}
           <div className="rounded-md shadow-sm -space-y-px">
@@ -41,7 +43,7 @@ const LoginPage = () => {
                 name="email"
                 type="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 placeholder-slate-500 text-slate-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -53,7 +55,7 @@ const LoginPage = () => {
                 name="password"
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 placeholder-slate-500 text-slate-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -73,8 +75,8 @@ const LoginPage = () => {
             </Button>
           </div>
           
-          <div className="mt-4 text-center text-sm text-slate-600">
-            Or <Link to="/register" className="text-indigo-600 hover:text-indigo-500 font-medium">register for a new account</Link>
+          <div className="mt-4 text-center text-sm text-slate-600 dark:text-slate-400">
+            Or <Link to="/register" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-medium">register for a new account</Link>
           </div>
         </form>
       </div>

@@ -29,12 +29,29 @@ const useAuthStore = create((set, get) => ({
       const response = await axiosClient.post('/auth/register', userData);
       const { token } = response.data;
       
+      if (token === "VERIFICATION_REQUIRED") {
+        set({ isLoading: false });
+        return { requiresVerification: true };
+      }
+      
       localStorage.setItem('accessToken', token);
       
       // Fetch user profile immediately after register
       await get().fetchUserProfile();
+      return { requiresVerification: false };
     } catch (error) {
       set({ error: error.message || 'Registration failed', isLoading: false });
+      throw error;
+    }
+  },
+
+  verifyEmail: async (email, code) => {
+    try {
+      set({ isLoading: true, error: null });
+      await axiosClient.post('/auth/verify', { email, code });
+      set({ isLoading: false });
+    } catch (error) {
+      set({ error: error.message || 'Verification failed', isLoading: false });
       throw error;
     }
   },

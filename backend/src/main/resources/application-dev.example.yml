@@ -3,6 +3,17 @@ spring:
     mongodb:
       uri: ${MONGODB_URI:mongodb+srv://<username>:<password>@cluster0.example.mongodb.net/interview_copilot_dev?retryWrites=true&w=majority}
       auto-index-creation: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: your-app-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 logging:
   level:

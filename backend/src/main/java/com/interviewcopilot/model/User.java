@@ -46,6 +46,9 @@ public class User {
     private String currentYear; // e.g. "3rd Year"
     private String branch; // e.g. "Computer Science"
 
+    private boolean isEmailVerified;
+    private String emailVerificationCode;
+
     private Role role;
 
     @CreatedDate

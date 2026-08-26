@@ -35,5 +35,11 @@ public class AuthController {
         AuthResponse response = authService.googleLogin(request);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
+
+    @PostMapping("/verify")
+    public ResponseEntity<ApiResponse<String>> verifyEmail(@Valid @RequestBody com.interviewcopilot.dto.auth.VerifyEmailRequest request) {
+        authService.verifyEmail(request.getEmail(), request.getCode());
+        return ResponseEntity.ok(ApiResponse.ok("Email verified successfully"));
+    }
 }
 

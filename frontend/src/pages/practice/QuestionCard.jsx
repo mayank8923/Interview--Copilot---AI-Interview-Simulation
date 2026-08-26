@@ -25,7 +25,7 @@ export const QuestionCard = ({ question }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm hover:shadow-md transition-all flex flex-col h-full">
+    <div className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full cursor-pointer animate-fade-in" onClick={() => navigate(`/practice/${question.id}`)}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="p-2 bg-slate-50 dark:bg-slate-900 rounded-lg">
