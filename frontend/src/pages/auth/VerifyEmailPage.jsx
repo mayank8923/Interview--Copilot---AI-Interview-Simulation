@@ -7,10 +7,11 @@ import { CheckCircle } from 'lucide-react';
 const VerifyEmailPage = () => {
   const [code, setCode] = useState('');
   const [success, setSuccess] = useState(false);
+  const [resendMsg, setResendMsg] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
-  const { verifyEmail, isLoading, error } = useAuthStore();
-  
+  const { verifyEmail, resendEmail, isLoading, error } = useAuthStore();
+
   const email = location.state?.email;
 
   useEffect(() => {
@@ -24,6 +25,16 @@ const VerifyEmailPage = () => {
     try {
       await verifyEmail(email, code);
       setSuccess(true);
+    } catch (err) {
+      // Error handled by store
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      setResendMsg('');
+      await resendEmail(email);
+      setResendMsg('A new verification code has been sent to your email!');
     } catch (err) {
       // Error handled by store
     }
@@ -65,6 +76,12 @@ const VerifyEmailPage = () => {
               <p className="text-red-700 dark:text-red-400 text-sm">{error}</p>
             </div>
           )}
+
+          {resendMsg && (
+            <div className="bg-emerald-50 dark:bg-emerald-900/30 border-l-4 border-emerald-500 p-4">
+              <p className="text-emerald-700 dark:text-emerald-400 text-sm">{resendMsg}</p>
+            </div>
+          )}
           
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
@@ -90,9 +107,17 @@ const VerifyEmailPage = () => {
               {isLoading ? 'Verifying...' : 'Verify Email'}
             </Button>
           </div>
-          
-          <div className="text-center">
-            <Link to="/login" className="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500">
+
+          <div className="flex items-center justify-between text-sm">
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={isLoading}
+              className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+            >
+              Didn't get a code? Resend
+            </button>
+            <Link to="/login" className="font-medium text-slate-600 dark:text-slate-400 hover:text-slate-500">
               Back to login
             </Link>
           </div>

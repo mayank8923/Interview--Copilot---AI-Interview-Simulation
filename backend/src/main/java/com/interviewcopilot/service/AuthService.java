@@ -109,17 +109,28 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new BadRequestException("User not found"));
 
-        if (user.isEmailVerified()) {
-            throw new BadRequestException("Email is already verified");
-        }
-
-        if (!code.equals(user.getEmailVerificationCode())) {
+        if (user.getEmailVerificationCode() == null || !user.getEmailVerificationCode().equals(code)) {
             throw new BadRequestException("Invalid verification code");
         }
 
         user.setEmailVerified(true);
         user.setEmailVerificationCode(null);
         userRepository.save(user);
+    }
+
+    public void resendVerificationEmail(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new BadRequestException("User not found"));
+
+        if (user.isEmailVerified()) {
+            throw new BadRequestException("Email is already verified.");
+        }
+
+        String otp = String.format("%06d", new java.util.Random().nextInt(999999));
+        user.setEmailVerificationCode(otp);
+        userRepository.save(user);
+
+        emailService.sendVerificationEmail(email, otp);
     }
 
     public AuthResponse googleLogin(GoogleLoginRequest request) {

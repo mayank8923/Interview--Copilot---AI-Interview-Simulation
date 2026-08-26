@@ -56,6 +56,17 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
+  resendEmail: async (email) => {
+    try {
+      set({ isLoading: true, error: null });
+      await axiosClient.post(`/auth/resend?email=${encodeURIComponent(email)}`);
+      set({ isLoading: false });
+    } catch (error) {
+      set({ error: error.message || 'Failed to resend email', isLoading: false });
+      throw error;
+    }
+  },
+
   googleLogin: async (token) => {
     try {
       set({ isLoading: true, error: null });
