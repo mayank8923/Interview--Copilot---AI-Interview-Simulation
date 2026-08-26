@@ -21,6 +21,10 @@ spring:
             required: true
           ssl:
             trust: smtp.gmail.com
+            trust: smtp.gmail.com,smtp.sendgrid.net
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 app:
   jwt:
