@@ -15,10 +15,14 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    @org.springframework.beans.factory.annotation.Value("${spring.mail.username:noreply@interviewcopilot.com}")
+    private String fromEmail;
+
     @Async
     public void sendVerificationEmail(String to, String otp) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
             message.setTo(to);
             message.setSubject("Verify Your Interview Copilot Account");
             
