@@ -6,6 +6,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import org.springframework.scheduling.annotation.Async;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -13,6 +15,7 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    @Async
     public void sendVerificationEmail(String to, String otp) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
