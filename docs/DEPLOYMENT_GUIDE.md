@@ -31,6 +31,10 @@ We recommend using [Render](https://render.com/) or [Railway](https://railway.ap
    - `JWT_SECRET`: Generate a long, random string (at least 256 bits).
    - `CORS_ALLOWED_ORIGINS`: Set this to your frontend URL later (e.g., `https://my-frontend.vercel.app`). For testing, you can use `*`.
    - `AI_API_KEY`: Your OpenAI/Gemini API key.
+   - `SMTP_HOST`: `smtp.sendgrid.net` (or your mail provider host)
+   - `SMTP_PORT`: `587` (use `2525` on Render if port 587 is blocked)
+   - `SMTP_USERNAME`: `apikey` (for SendGrid) or your email username
+   - `SMTP_PASSWORD`: Your SendGrid API key or SMTP password
 
 The platform will automatically detect the `Dockerfile`, build the Java application, and launch it.
 

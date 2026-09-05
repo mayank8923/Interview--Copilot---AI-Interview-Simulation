@@ -15,8 +15,8 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    // Hardcoded to the verified SendGrid Single Sender
-    private String fromEmail = "vashisthamayank8@gmail.com";
+    @org.springframework.beans.factory.annotation.Value("${app.mail.from:${spring.mail.username:noreply@interviewcopilot.com}}")
+    private String fromEmail;
 
     public void sendVerificationEmail(String to, String otp) {
         log.info("\n\n==============================================\nVERIFICATION CODE FOR {}: {}\nFROM: {}\n==============================================\n", to, otp, fromEmail);

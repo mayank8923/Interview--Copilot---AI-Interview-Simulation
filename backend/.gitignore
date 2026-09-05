@@ -31,5 +31,9 @@ target/
 ### Environment & Secrets ###
 .env
 .env.local
+application-local.yml
+application-dev.yml
+src/main/resources/application-local.yml
+src/main/resources/application-dev.yml
 *.log
 
