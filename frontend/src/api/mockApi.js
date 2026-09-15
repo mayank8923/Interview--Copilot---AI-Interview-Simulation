@@ -1,7 +1,7 @@
 import axiosClient from './axiosClient';
 
-export const startMockSession = async (type, durationMinutes) => {
-  const response = await axiosClient.post('/mock/start', { type, durationMinutes });
+export const startMockSession = async (payload) => {
+  const response = await axiosClient.post('/mock/start', payload);
   return response.data;
 };
 

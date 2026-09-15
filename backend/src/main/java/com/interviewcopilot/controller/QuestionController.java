@@ -19,9 +19,11 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<Question>>> getQuestions(
             @RequestParam(required = false) String type,
-            @RequestParam(required = false) String difficulty) {
+            @RequestParam(required = false) String difficulty,
+            @RequestParam(required = false) String topic,
+            @RequestParam(required = false) String search) {
         
-        List<Question> questions = questionService.getAllQuestions(type, difficulty);
+        List<Question> questions = questionService.getAllQuestions(type, difficulty, topic, search);
         return ResponseEntity.ok(ApiResponse.ok(questions));
     }
 

@@ -31,8 +31,8 @@ app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
   ai:
-    provider: ${AI_PROVIDER:openai}
-    api-key: ${AI_API_KEY:mock_key}
+    provider: ${AI_PROVIDER:gemini}
+    api-key: ${AI_API_KEY:}
     api-url: ${AI_API_URL:https://api.openai.com/v1/chat/completions}
     model: ${AI_MODEL:gpt-4o-mini}
     timeout-ms: 15000

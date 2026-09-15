@@ -1,7 +1,11 @@
 package com.interviewcopilot.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.interviewcopilot.dto.ai.AiQuestionGenerateRequest;
 import com.interviewcopilot.model.Question;
 import com.interviewcopilot.repository.QuestionRepository;
+import com.interviewcopilot.service.ai.LlmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,8 @@ import java.util.List;
 public class QuestionGenerationService {
 
     private final QuestionRepository questionRepository;
+    private final LlmService llmService;
+    private final ObjectMapper objectMapper;
 
     public List<Question> generateQuestions(String company, String type, String difficulty) {
         List<Question> generated = new ArrayList<>();
@@ -25,7 +31,14 @@ public class QuestionGenerationService {
 
         List<Question> saved = new ArrayList<>();
         for (Question q : generated) {
-            if (!questionRepository.existsByTitle(q.getTitle())) {
+            Question existing = questionRepository.findByTitle(q.getTitle());
+            if (existing != null) {
+                // If it exists, append the company to targetCompany if it's not already there
+                if (!existing.getTargetCompany().contains(q.getTargetCompany())) {
+                    existing.setTargetCompany(existing.getTargetCompany() + ", " + q.getTargetCompany());
+                    questionRepository.save(existing);
+                }
+            } else {
                 saved.add(questionRepository.save(q));
             }
         }
@@ -78,6 +91,12 @@ public class QuestionGenerationService {
                 q.add(b("Largest Rectangle in Histogram", "Find the area of the largest rectangle in a histogram.", "TECHNICAL", "HARD", co, "Monotonic Stack", List.of("Array","Stack","Monotonic Stack")));
             }
         }
+        // Incorporate rich domain-specific technical question suites
+        q.addAll(javaSpringBootQuestions(co, diff));
+        q.addAll(reactFrontendQuestions(co, diff));
+        q.addAll(databaseSqlQuestions(co, diff));
+        q.addAll(devOpsCloudQuestions(co, diff));
+        q.addAll(aiMlPythonQuestions(co, diff));
         return q;
     }
 
@@ -493,8 +512,214 @@ public class QuestionGenerationService {
         return q;
     }
 
+    // ═══════════════ DOMAIN 1: JAVA & SPRING BOOT ═══════════════
+    private List<Question> javaSpringBootQuestions(String co, String diff) {
+        List<Question> list = new ArrayList<>();
+        if ("EASY".equals(diff)) {
+            list.add(b("JVM Memory Model: Heap vs Stack", "Explain the difference between Heap and Stack memory in the JVM. How are primitive variables and object references stored?", "TECHNICAL", "EASY", co, "Java", List.of("Java", "JVM", "Memory")));
+            list.add(b("Java OOP: Abstract Class vs Interface", "Explain when to choose an abstract class over an interface in Java 17+. How do default and static methods impact design?", "TECHNICAL", "EASY", co, "Java", List.of("Java", "OOP", "Architecture")));
+            list.add(b("Spring IoC & Bean Scopes", "Explain Spring Inversion of Control (IoC) and Dependency Injection. Compare Singleton, Prototype, Request, and Session scopes.", "TECHNICAL", "EASY", co, "Spring Boot", List.of("Java", "Spring Boot", "IoC")));
+        } else if ("MEDIUM".equals(diff)) {
+            list.add(b("ConcurrentHashMap Internal Architecture", "How does ConcurrentHashMap achieve lock-free reads and segmented/CAS writes without locking the entire map? Compare with SynchronizedMap.", "TECHNICAL", "MEDIUM", co, "Java", List.of("Java", "Concurrency", "Collections")));
+            list.add(b("Spring @Transactional & AOP Proxies", "Explain how Spring creates dynamic AOP proxies for @Transactional. Why does self-invocation within the same class bypass transaction management?", "TECHNICAL", "MEDIUM", co, "Spring Boot", List.of("Java", "Spring Boot", "Transactions")));
+            list.add(b("JPA / Hibernate N+1 Query Problem", "Explain the N+1 SELECT query problem in Hibernate. How do JOIN FETCH, Entity Graphs, and BatchSize resolve it? Compare L1 and L2 caches.", "TECHNICAL", "MEDIUM", co, "Spring Boot", List.of("Java", "Hibernate", "JPA")));
+        } else {
+            list.add(b("JVM Garbage Collection: G1 vs ZGC", "Deep-dive into G1 and ZGC garbage collectors. How does ZGC achieve sub-millisecond pauses with colored pointers and load barriers? How do you diagnose STW spikes?", "TECHNICAL", "HARD", co, "Java", List.of("Java", "JVM", "Performance")));
+            list.add(b("Microservices Resilience with Circuit Breaker", "Design a resilient microservice communication layer using Resilience4j circuit breaker, retry with jitter, bulkhead isolation, and fallback queues.", "TECHNICAL", "HARD", co, "Spring Boot", List.of("Java", "Spring Boot", "Microservices")));
+        }
+        return list;
+    }
+
+    // ═══════════════ DOMAIN 2: REACT & FRONTEND ═══════════════
+    private List<Question> reactFrontendQuestions(String co, String diff) {
+        List<Question> list = new ArrayList<>();
+        if ("EASY".equals(diff)) {
+            list.add(b("React Hooks: useState vs useRef", "Explain the operational difference between useState and useRef in React. When does an update trigger a re-render versus mutating a ref?", "TECHNICAL", "EASY", co, "React", List.of("React", "Frontend", "JavaScript")));
+            list.add(b("CSS Box Model & Flexbox vs Grid", "Explain the CSS Box Model (content, padding, border, margin). When should you choose CSS Grid over Flexbox?", "TECHNICAL", "EASY", co, "Frontend", List.of("CSS", "Frontend", "Web")));
+        } else if ("MEDIUM".equals(diff)) {
+            list.add(b("React Virtual DOM & Fiber Reconciliation", "Explain how React's Virtual DOM and the Fiber reconciliation algorithm work. How does React diff trees in O(n) and why are keys mandatory?", "TECHNICAL", "MEDIUM", co, "React", List.of("React", "Performance", "Virtual DOM")));
+            list.add(b("React useEffect Stale Closures & Memory Leaks", "Explain how stale closures happen in useEffect or useCallback hooks. How do you properly handle dependency arrays and cleanup functions to avoid memory leaks?", "TECHNICAL", "MEDIUM", co, "React", List.of("React", "JavaScript", "Hooks")));
+            list.add(b("State Management: Zustand vs Redux vs Context", "Compare Context API, Zustand, and Redux Toolkit. Why does Context cause widespread re-renders and how do atomic selectors in Zustand fix this?", "TECHNICAL", "MEDIUM", co, "React", List.of("React", "State Management", "Architecture")));
+        } else {
+            list.add(b("Web Performance: Core Web Vitals Optimization", "How do you systematically optimize a React application to achieve top Core Web Vitals (LCP < 2.5s, INP < 200ms, CLS < 0.1)? Cover code splitting, SSR, and bundle analysis.", "TECHNICAL", "HARD", co, "Frontend", List.of("React", "Performance", "Web Vitals")));
+            list.add(b("React Server Components (RSC) Architecture", "Explain the architecture of React Server Components (RSC) vs traditional Client-side rendering and SSR. How do Server Components reduce client bundle size?", "TECHNICAL", "HARD", co, "React", List.of("React", "RSC", "Architecture")));
+        }
+        return list;
+    }
+
+    // ═══════════════ DOMAIN 3: DATABASE & SQL ═══════════════
+    private List<Question> databaseSqlQuestions(String co, String diff) {
+        List<Question> list = new ArrayList<>();
+        if ("EASY".equals(diff)) {
+            list.add(b("SQL: Clustered vs Non-Clustered Indexes", "Explain the fundamental difference between a Clustered and Non-Clustered index. Why can a table have only one clustered index?", "TECHNICAL", "EASY", co, "Database", List.of("SQL", "Database", "Indexing")));
+            list.add(b("SQL Joins & Normalization (1NF to 3NF)", "Explain INNER, LEFT, and FULL OUTER joins. Define 1NF, 2NF, and 3NF, and explain why a production database might be intentionally denormalized.", "TECHNICAL", "EASY", co, "Database", List.of("SQL", "Database", "Normalization")));
+        } else if ("MEDIUM".equals(diff)) {
+            list.add(b("Database Isolation Levels & Anomalies", "Explain the ANSI SQL isolation levels (Read Uncommitted, Read Committed, Repeatable Read, Serializable) and the anomalies each prevents (Dirty Reads, Non-repeatable Reads, Phantoms).", "TECHNICAL", "MEDIUM", co, "Database", List.of("Database", "ACID", "Concurrency")));
+            list.add(b("SQL Query Optimization with EXPLAIN ANALYZE", "How do you diagnose and optimize a slow query in PostgreSQL/MySQL using EXPLAIN ANALYZE? Discuss sequential scans, index scans, and composite index column order.", "TECHNICAL", "MEDIUM", co, "Database", List.of("SQL", "Optimization", "Database")));
+            list.add(b("NoSQL vs SQL: MongoDB vs PostgreSQL", "Compare relational databases (PostgreSQL) and document datastores (MongoDB). How do you choose between ACID relations and document embedding at high write scale?", "TECHNICAL", "MEDIUM", co, "Database", List.of("Database", "MongoDB", "NoSQL")));
+        } else {
+            list.add(b("Database Storage Engines: B-Tree vs LSM-Tree", "Deep dive into the storage engine differences between B-Trees (InnoDB) and Log-Structured Merge Trees (Cassandra, RocksDB). Compare write amplification, read latency, and compaction.", "TECHNICAL", "HARD", co, "Database", List.of("Database", "Storage Engines", "Internals")));
+            list.add(b("Distributed Database Sharding & Cross-Shard Joins", "Design a sharding strategy for a multi-tenant relational database with 100M+ rows. Compare hash-based, range-based, and directory-based sharding and explain cross-shard queries.", "TECHNICAL", "HARD", co, "Database", List.of("Database", "Distributed Systems", "Sharding")));
+        }
+        return list;
+    }
+
+    // ═══════════════ DOMAIN 4: DEVOPS & CLOUD ═══════════════
+    private List<Question> devOpsCloudQuestions(String co, String diff) {
+        List<Question> list = new ArrayList<>();
+        if ("EASY".equals(diff)) {
+            list.add(b("Docker Multi-Stage Builds & Image Optimization", "Why are Docker multi-stage builds important for production containerization? How do they reduce image size and shrink security attack surfaces?", "TECHNICAL", "EASY", co, "DevOps", List.of("Docker", "DevOps", "Containers")));
+            list.add(b("CI/CD Pipeline Core Stages", "What are the essential stages of a production CI/CD pipeline? How do automated linting, unit testing, containerization, and staging promotion fit together?", "TECHNICAL", "EASY", co, "DevOps", List.of("CI/CD", "DevOps", "Automation")));
+        } else if ("MEDIUM".equals(diff)) {
+            list.add(b("Kubernetes Architecture & Pod Lifecycle", "Explain the control plane components of Kubernetes (kube-apiserver, etcd, kube-scheduler) and worker nodes. How do liveness, readiness, and startup probes work?", "TECHNICAL", "MEDIUM", co, "DevOps", List.of("Kubernetes", "DevOps", "Cloud")));
+            list.add(b("Zero-Downtime Deployments: Blue-Green vs Canary", "Compare Blue-Green and Canary deployments with Rolling Updates. How do you implement automated rollbacks based on latency and error rate metrics?", "TECHNICAL", "MEDIUM", co, "DevOps", List.of("DevOps", "Deployment", "Kubernetes")));
+        } else {
+            list.add(b("Distributed Observability: OpenTelemetry & Tracing", "Design an end-to-end distributed observability pipeline across 50+ microservices using OpenTelemetry, Prometheus, Jaeger, and Grafana. Address context propagation and tail-based sampling.", "TECHNICAL", "HARD", co, "DevOps", List.of("DevOps", "Observability", "Microservices")));
+        }
+        return list;
+    }
+
+    // ═══════════════ DOMAIN 5: PYTHON & AI / ML ═══════════════
+    private List<Question> aiMlPythonQuestions(String co, String diff) {
+        List<Question> list = new ArrayList<>();
+        if ("EASY".equals(diff)) {
+            list.add(b("Python GIL & Concurrency", "Explain what the Global Interpreter Lock (GIL) is in CPython. How does it affect CPU-bound multithreaded programs and when should you use multiprocessing or asyncio?", "TECHNICAL", "EASY", co, "Python & AI", List.of("Python", "Concurrency", "Internals")));
+            list.add(b("Supervised vs Unsupervised Learning & Metrics", "Differentiate supervised, unsupervised, and reinforcement learning. Explain precision, recall, F1-score, and why accuracy is misleading on imbalanced datasets.", "TECHNICAL", "EASY", co, "Python & AI", List.of("AI/ML", "Data Science", "Metrics")));
+        } else if ("MEDIUM".equals(diff)) {
+            list.add(b("RAG (Retrieval-Augmented Generation) Architecture", "Design a production RAG pipeline for querying enterprise documentation using an LLM. Detail document chunking, embedding generation, vector similarity search, and prompt augmentation.", "TECHNICAL", "MEDIUM", co, "Python & AI", List.of("AI/ML", "LLM", "RAG")));
+            list.add(b("Vector Databases & HNSW Similarity Search", "How do vector databases perform approximate nearest neighbor (ANN) search across high-dimensional embeddings using the HNSW graph algorithm?", "TECHNICAL", "MEDIUM", co, "Python & AI", List.of("AI/ML", "Vector DB", "Embeddings")));
+        } else {
+            list.add(b("LLM Fine-Tuning: LoRA & QLoRA", "Explain parameter-efficient fine-tuning (PEFT) using LoRA and 4-bit Quantized LoRA (QLoRA). How do rank decomposition matrices enable fine-tuning 70B parameter models on commodity GPUs?", "TECHNICAL", "HARD", co, "Python & AI", List.of("AI/ML", "LLM", "Deep Learning")));
+        }
+        return list;
+    }
+
+    // ═══════════════ DYNAMIC AI QUESTION GENERATION (LIVE LLM) ═══════════════
+    public List<Question> generateAiQuestions(AiQuestionGenerateRequest request) {
+        String role = (request.getRole() != null && !request.getRole().isBlank()) ? request.getRole().trim() : "Software Engineer";
+        String company = (request.getCompany() != null && !request.getCompany().isBlank()) ? request.getCompany().trim() : "General";
+        String topic = (request.getTopic() != null && !request.getTopic().isBlank()) ? request.getTopic().trim() : "Software Engineering";
+        String diff = (request.getDifficulty() != null && !request.getDifficulty().isBlank()) ? request.getDifficulty().trim().toUpperCase() : "MEDIUM";
+        String type = (request.getType() != null && !request.getType().isBlank()) ? request.getType().trim().toUpperCase() : "TECHNICAL";
+        int count = request.getCount() != null && request.getCount() > 0 ? Math.min(request.getCount(), 5) : 3;
+
+        List<Question> generated = new ArrayList<>();
+
+        // 1. Attempt Live LLM generation via Gemini / OpenAI
+        try {
+            String prompt = String.format(
+                "You are an expert hiring manager and technical interviewer at %s. " +
+                "Generate exactly %d unique, highly realistic, and technically rigorous interview questions for a %s candidate. " +
+                "The questions must focus on '%s' with difficulty '%s' in category '%s'. %s\n" +
+                "CRITICAL: You MUST generate completely new and unique questions every time. DO NOT return standard or generic examples. Be highly creative. (Randomization seed: %s)\n\n" +
+                "Return STRICTLY a valid JSON array of objects without markdown formatting or backticks. Follow this exact JSON schema:\n" +
+                "[\n" +
+                "  {\n" +
+                "    \"title\": \"Clear and concise question title\",\n" +
+                "    \"content\": \"Comprehensive question problem statement, architectural context, requirements, constraints, and evaluation criteria\",\n" +
+                "    \"type\": \"%s\",\n" +
+                "    \"difficulty\": \"%s\",\n" +
+                "    \"targetCompany\": \"%s\",\n" +
+                "    \"topic\": \"%s\",\n" +
+                "    \"tags\": [\"%s\", \"%s\", \"AI Generated\"]\n" +
+                "  }\n" +
+                "]",
+                company, count, role, topic, diff, type,
+                (request.getCustomPrompt() != null && !request.getCustomPrompt().isBlank()) ? "Additional focus/JD details: " + request.getCustomPrompt().trim() : "",
+                java.util.UUID.randomUUID().toString(),
+                type, diff, company, topic, topic, role
+            );
+
+            String aiResponse = llmService.generate(prompt);
+            if (aiResponse != null && !aiResponse.isBlank()) {
+                String cleanJson = aiResponse.trim();
+                if (cleanJson.startsWith("```json")) {
+                    cleanJson = cleanJson.substring(7);
+                } else if (cleanJson.startsWith("```")) {
+                    cleanJson = cleanJson.substring(3);
+                }
+                if (cleanJson.endsWith("```")) {
+                    cleanJson = cleanJson.substring(0, cleanJson.length() - 3);
+                }
+                cleanJson = cleanJson.trim();
+
+                JsonNode arrayNode = objectMapper.readTree(cleanJson);
+                if (arrayNode.isArray()) {
+                    for (JsonNode node : arrayNode) {
+                        String title = node.path("title").asText("Interview Question");
+                        String content = node.path("content").asText("");
+                        
+                        List<String> tags = new ArrayList<>();
+                        if (node.has("tags") && node.path("tags").isArray()) {
+                            for (JsonNode t : node.path("tags")) tags.add(t.asText());
+                        }
+                        if (tags.isEmpty()) tags = List.of(topic, role, "AI Generated");
+
+                        Question q = Question.builder()
+                                .title(title.contains(company) ? title : title + " (" + company + ")")
+                                .content(content)
+                                .type(type)
+                                .difficulty(diff)
+                                .targetCompany(company)
+                                .topic(topic)
+                                .aiGenerated(true)
+                                .tags(tags)
+                                .build();
+
+                        if (!questionRepository.existsByTitle(q.getTitle())) {
+                            generated.add(questionRepository.save(q));
+                        }
+                    }
+                    if (!generated.isEmpty()) {
+                        log.info("Successfully generated and saved {} live LLM questions from AI API!", generated.size());
+                        return generated;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Live LLM generation encountered an issue, using intelligent fallback: {}", e.getMessage());
+        }
+
+        // 2. Intelligent fallback generator if API key is not configured or network issue occurs
+        for (int i = 1; i <= count; i++) {
+            String title = String.format("%s %s Scenario #%d", topic, role, (int)(Math.random() * 900 + 100));
+            String promptDetails = (request.getCustomPrompt() != null && !request.getCustomPrompt().isBlank())
+                    ? "\n\nContext / Requirements: " + request.getCustomPrompt().trim()
+                    : "";
+
+            String content = String.format(
+                "You are interviewing for a %s position at %s.\n\n" +
+                "Problem Scenario [%s - %s]:\n" +
+                "Demonstrate your in-depth expertise in %s. Walk through your architectural considerations, key design trade-offs, potential edge cases, and implementation strategy.%s\n\n" +
+                "Key Evaluation Criteria:\n" +
+                "1. Correctness and depth of technical reasoning.\n" +
+                "2. Clear explanation of scalability, performance, and failure modes.\n" +
+                "3. Industry best practices and real-world trade-off analysis.",
+                role, company, type, diff, topic, promptDetails
+            );
+
+            Question q = Question.builder()
+                    .title(title + " (" + company + ")")
+                    .content(content)
+                    .type(type)
+                    .difficulty(diff)
+                    .targetCompany(company)
+                    .topic(topic)
+                    .aiGenerated(true)
+                    .tags(List.of(topic, role, type, diff, "AI Generated"))
+                    .build();
+
+            if (!questionRepository.existsByTitle(q.getTitle())) {
+                generated.add(questionRepository.save(q));
+            }
+        }
+
+        log.info("Generated {} questions for role '{}' on topic '{}'", generated.size(), role, topic);
+        return generated;
+    }
+
     // ═══════════════ BUILDER ═══════════════
     private Question b(String title, String content, String type, String diff, String co, String topic, List<String> tags) {
-        return Question.builder().title(title + " (" + co + ")").content(content).type(type).difficulty(diff).targetCompany(co).topic(topic).aiGenerated(true).tags(tags).build();
+        return Question.builder().title(title).content(content).type(type).difficulty(diff).targetCompany(co).topic(topic).aiGenerated(true).tags(tags).build();
     }
 }

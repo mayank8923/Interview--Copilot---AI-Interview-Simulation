@@ -31,5 +31,12 @@ public class QuestionGenerationController {
         int total = questionGenerationService.bulkGenerateAll();
         return ResponseEntity.ok(ApiResponse.ok("Bulk generation complete", total));
     }
+
+    @PostMapping("/ai-generate")
+    public ResponseEntity<ApiResponse<List<Question>>> generateAiQuestions(
+            @RequestBody com.interviewcopilot.dto.ai.AiQuestionGenerateRequest request) {
+        List<Question> questions = questionGenerationService.generateAiQuestions(request);
+        return ResponseEntity.ok(ApiResponse.ok("Successfully generated " + questions.size() + " custom AI questions", questions));
+    }
 }
 

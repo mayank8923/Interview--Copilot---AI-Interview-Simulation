@@ -6,5 +6,10 @@ import lombok.Data;
 public class StartMockRequest {
     private String type; // e.g., "TECHNICAL", "HR"
     private int durationMinutes; // e.g., 15 or 30
+    private String role;
+    private String company;
+    private String topic;
+    private String difficulty;
+    private String customPrompt;
 }
 

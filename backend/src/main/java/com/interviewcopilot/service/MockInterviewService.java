@@ -11,6 +11,7 @@ import com.interviewcopilot.repository.EvaluationReportRepository;
 import com.interviewcopilot.repository.MockInterviewSessionRepository;
 import com.interviewcopilot.repository.QuestionRepository;
 import com.interviewcopilot.service.ai.AiEvaluationService;
+import com.interviewcopilot.dto.ai.AiQuestionGenerateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -29,13 +30,28 @@ public class MockInterviewService {
     private final EvaluationReportRepository reportRepository;
     private final QuestionRepository questionRepository;
     private final AiEvaluationService aiEvaluationService;
+    private final QuestionGenerationService questionGenerationService;
 
     public MockSessionResponse startSession(String userId, StartMockRequest request) {
-        List<Question> allQuestions = questionRepository.findAll();
-        Collections.shuffle(allQuestions);
-        
         int numQuestions = request.getDurationMinutes() == 15 ? 2 : 3;
-        List<Question> selectedQuestions = allQuestions.stream().limit(numQuestions).collect(Collectors.toList());
+        
+        AiQuestionGenerateRequest aiReq = new AiQuestionGenerateRequest();
+        aiReq.setRole(request.getRole() != null ? request.getRole() : "Software Engineer");
+        aiReq.setCompany(request.getCompany() != null ? request.getCompany() : "General");
+        aiReq.setTopic(request.getTopic() != null ? request.getTopic() : "Software Engineering");
+        aiReq.setDifficulty(request.getDifficulty() != null ? request.getDifficulty() : "MEDIUM");
+        aiReq.setType(request.getType() != null ? request.getType() : "TECHNICAL");
+        aiReq.setCount(numQuestions);
+        aiReq.setCustomPrompt(request.getCustomPrompt());
+
+        List<Question> selectedQuestions = questionGenerationService.generateAiQuestions(aiReq);
+        
+        if (selectedQuestions.isEmpty()) {
+            // fallback just in case
+            List<Question> allQuestions = questionRepository.findAll();
+            Collections.shuffle(allQuestions);
+            selectedQuestions = allQuestions.stream().limit(numQuestions).collect(Collectors.toList());
+        }
         
         MockInterviewSession session = MockInterviewSession.builder()
                 .userId(userId)

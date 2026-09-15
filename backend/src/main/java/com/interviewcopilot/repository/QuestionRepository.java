@@ -14,5 +14,6 @@ public interface QuestionRepository extends MongoRepository<Question, String> {
     List<Question> findByTargetCompany(String targetCompany);
     List<Question> findByTopic(String topic);
     boolean existsByTitle(String title);
+    Question findByTitle(String title);
 }
 

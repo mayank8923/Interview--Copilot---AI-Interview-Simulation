@@ -42,7 +42,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/api/v1/health").permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/questions").permitAll()
+                .requestMatchers("/api/v1/questions/**").permitAll()
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers
