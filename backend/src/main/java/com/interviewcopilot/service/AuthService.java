@@ -62,8 +62,15 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BadRequestException("Email address already in use.");
+        Optional<User> existingUserOpt = userRepository.findByEmail(request.getEmail());
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            if (existingUser.isEmailVerified()) {
+                throw new BadRequestException("Email address already in use.");
+            } else {
+                log.info("Removing stale unverified registration for email: {}", request.getEmail());
+                userRepository.delete(existingUser);
+            }
         }
 
         String pwd = request.getPassword();
@@ -131,6 +138,13 @@ public class AuthService {
         userRepository.save(user);
 
         emailService.sendVerificationEmail(email, otp);
+    }
+
+    public void deleteUserByEmail(String email) {
+        userRepository.findByEmail(email).ifPresent(user -> {
+            userRepository.delete(user);
+            log.info("Deleted user from database: {}", email);
+        });
     }
 
     public AuthResponse googleLogin(GoogleLoginRequest request) {

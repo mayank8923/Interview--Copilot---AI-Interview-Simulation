@@ -11,5 +11,6 @@ public class StartMockRequest {
     private String topic;
     private String difficulty;
     private String customPrompt;
+    private boolean useResume;
 }
 

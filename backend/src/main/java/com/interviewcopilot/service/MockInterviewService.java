@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.interviewcopilot.repository.ResumeAnalysisRepository;
+import com.interviewcopilot.model.ResumeAnalysis;
+
 @Service
 @RequiredArgsConstructor
 public class MockInterviewService {
@@ -31,9 +34,19 @@ public class MockInterviewService {
     private final QuestionRepository questionRepository;
     private final AiEvaluationService aiEvaluationService;
     private final QuestionGenerationService questionGenerationService;
+    private final ResumeAnalysisRepository resumeAnalysisRepository;
+    private final UserActivityService userActivityService;
 
     public MockSessionResponse startSession(String userId, StartMockRequest request) {
         int numQuestions = request.getDurationMinutes() == 15 ? 2 : 3;
+        
+        String finalCustomPrompt = request.getCustomPrompt() != null ? request.getCustomPrompt() : "";
+        if (request.isUseResume()) {
+            ResumeAnalysis latestResume = resumeAnalysisRepository.findTopByUserIdOrderByCreatedAtDesc(userId).orElse(null);
+            if (latestResume != null && latestResume.getRawResumeText() != null) {
+                finalCustomPrompt += "\n\nCANDIDATE'S RESUME:\n" + latestResume.getRawResumeText();
+            }
+        }
         
         AiQuestionGenerateRequest aiReq = new AiQuestionGenerateRequest();
         aiReq.setRole(request.getRole() != null ? request.getRole() : "Software Engineer");
@@ -42,7 +55,7 @@ public class MockInterviewService {
         aiReq.setDifficulty(request.getDifficulty() != null ? request.getDifficulty() : "MEDIUM");
         aiReq.setType(request.getType() != null ? request.getType() : "TECHNICAL");
         aiReq.setCount(numQuestions);
-        aiReq.setCustomPrompt(request.getCustomPrompt());
+        aiReq.setCustomPrompt(finalCustomPrompt.isEmpty() ? null : finalCustomPrompt);
 
         List<Question> selectedQuestions = questionGenerationService.generateAiQuestions(aiReq);
         
@@ -98,6 +111,7 @@ public class MockInterviewService {
         session.getUserAnswers().add(answer);
         session = sessionRepository.save(session);
         
+        userActivityService.recordActivity(session.getUserId());
         return getSession(sessionId);
     }
 
@@ -112,6 +126,7 @@ public class MockInterviewService {
         session.setStatus("COMPLETED");
         session.setCompletedAt(LocalDateTime.now());
         sessionRepository.save(session);
+        userActivityService.recordActivity(session.getUserId());
         
         return aiEvaluationService.generateAggregateReport(session)
                 .map(report -> reportRepository.save(report));

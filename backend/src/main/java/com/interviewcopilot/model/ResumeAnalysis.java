@@ -23,6 +23,7 @@ public class ResumeAnalysis {
     private String userId;
     private int matchScore; // 0-100
     private String targetRole;
+    private String rawResumeText;
     
     private List<String> matchedKeywords;
     private List<String> missingKeywords;

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
 import { LandingPage } from './pages/LandingPage';
@@ -13,9 +13,52 @@ import { InterviewRoomPage } from './pages/mock/InterviewRoomPage';
 import { ReportPage } from './pages/mock/ReportPage';
 import { ResumeScannerPage } from './pages/resume/ResumeScannerPage';
 import { ChatInterviewPage } from './pages/interview/ChatInterviewPage';
+import { PrivacyPolicyPage } from './pages/legal/PrivacyPolicyPage';
 import VerifyEmailPage from './pages/auth/VerifyEmailPage';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import useAuthStore from './store/useAuthStore';
+
+const AppContent = () => {
+  const location = useLocation();
+  const isWorkspace = location.pathname.startsWith('/practice/') || 
+                      location.pathname.startsWith('/mock/room/') || 
+                      location.pathname.startsWith('/chat-interview/');
+
+  return (
+    <div className={`flex flex-col bg-[#fbf9f6] dark:bg-[#0c0d0f] transition-colors ${
+      isWorkspace ? 'h-screen overflow-hidden' : 'min-h-screen'
+    }`}>
+      <Navbar />
+      <main className={`flex-1 flex flex-col min-h-0 ${
+        isWorkspace ? 'overflow-hidden' : 'overflow-y-auto'
+      }`}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
+          
+          {/* Public Teaser Routes */}
+          <Route path="/practice" element={<PracticeCatalogPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/practice/:id" element={<PracticeWorkspacePage />} />
+            <Route path="/mock/room/:id" element={<InterviewRoomPage />} />
+            <Route path="/mock/report/:id" element={<ReportPage />} />
+            <Route path="/resume" element={<ResumeScannerPage />} />
+            <Route path="/chat-interview" element={<ChatInterviewPage />} />
+            <Route path="/chat-interview/:id" element={<ChatInterviewPage />} />
+          </Route>
+        </Routes>
+      </main>
+      {!isWorkspace && <Footer />}
+    </div>
+  );
+};
 
 export const App = () => {
   const { checkAuth } = useAuthStore();
@@ -26,33 +69,7 @@ export const App = () => {
 
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-slate-50 transition-colors">
-        <Navbar />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/verify-email" element={<VerifyEmailPage />} />
-            
-            {/* Public Teaser Routes */}
-            <Route path="/practice" element={<PracticeCatalogPage />} />
-            
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/practice/:id" element={<PracticeWorkspacePage />} />
-              <Route path="/mock/room/:id" element={<InterviewRoomPage />} />
-              <Route path="/mock/report/:id" element={<ReportPage />} />
-              <Route path="/resume" element={<ResumeScannerPage />} />
-              <Route path="/chat-interview" element={<ChatInterviewPage />} />
-              <Route path="/chat-interview/:id" element={<ChatInterviewPage />} />
-            </Route>
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <AppContent />
     </Router>
   );
 };

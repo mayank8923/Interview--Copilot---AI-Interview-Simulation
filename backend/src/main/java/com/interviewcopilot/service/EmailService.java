@@ -1,12 +1,12 @@
 package com.interviewcopilot.service;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import org.springframework.scheduling.annotation.Async;
 
 @Slf4j
 @Service
@@ -15,10 +15,12 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    @Getter
+    @Setter
     @org.springframework.beans.factory.annotation.Value("${app.mail.from:${spring.mail.username:noreply@interviewcopilot.com}}")
-    private String fromEmail;
+    private String fromEmail = "noreply@interviewcopilot.com";
 
-    public void sendVerificationEmail(String to, String otp) {
+    public boolean sendVerificationEmail(String to, String otp) {
         log.info("\n\n==============================================\nVERIFICATION CODE FOR {}: {}\nFROM: {}\n==============================================\n", to, otp, fromEmail);
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -35,11 +37,13 @@ public class EmailService {
             message.setText(text);
             mailSender.send(message);
             log.info("Successfully sent verification email via SMTP to: {}", to);
+            return true;
         } catch (Exception e) {
             log.error("SMTP DISPATCH FAILED for {}: {} ({})", to, e.getMessage(), e.getClass().getSimpleName());
             if (e.getCause() != null) {
                 log.error("SMTP Root Cause: {}", e.getCause().getMessage());
             }
+            return false;
         }
     }
 }

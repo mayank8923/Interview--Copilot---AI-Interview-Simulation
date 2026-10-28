@@ -34,8 +34,14 @@ public class QuestionGenerationService {
             Question existing = questionRepository.findByTitle(q.getTitle());
             if (existing != null) {
                 // If it exists, append the company to targetCompany if it's not already there
-                if (!existing.getTargetCompany().contains(q.getTargetCompany())) {
-                    existing.setTargetCompany(existing.getTargetCompany() + ", " + q.getTargetCompany());
+                String existingCompanies = existing.getTargetCompany();
+                String newCompany = q.getTargetCompany();
+                
+                if (existingCompanies == null) {
+                    existing.setTargetCompany(newCompany);
+                    questionRepository.save(existing);
+                } else if (newCompany != null && !existingCompanies.contains(newCompany)) {
+                    existing.setTargetCompany(existingCompanies + ", " + newCompany);
                     questionRepository.save(existing);
                 }
             } else {
@@ -607,6 +613,11 @@ public class QuestionGenerationService {
 
         // 1. Attempt Live LLM generation via Gemini / OpenAI
         try {
+            String customContext = (request.getCustomPrompt() != null && !request.getCustomPrompt().isBlank()) ? request.getCustomPrompt().trim() : "";
+            String resumeInstruction = customContext.contains("CANDIDATE'S RESUME:") 
+                ? "\nCRITICAL: The candidate's resume has been provided below. You MUST tailor the interview questions specifically to the candidate's past projects, experiences, and technologies listed in their resume. Ask deep follow-up questions about their specific implementations.\n\n" + customContext 
+                : "\nAdditional focus/JD details: " + customContext;
+
             String prompt = String.format(
                 "You are an expert hiring manager and technical interviewer at %s. " +
                 "Generate exactly %d unique, highly realistic, and technically rigorous interview questions for a %s candidate. " +
@@ -625,7 +636,7 @@ public class QuestionGenerationService {
                 "  }\n" +
                 "]",
                 company, count, role, topic, diff, type,
-                (request.getCustomPrompt() != null && !request.getCustomPrompt().isBlank()) ? "Additional focus/JD details: " + request.getCustomPrompt().trim() : "",
+                customContext.isEmpty() ? "" : resumeInstruction,
                 java.util.UUID.randomUUID().toString(),
                 type, diff, company, topic, topic, role
             );

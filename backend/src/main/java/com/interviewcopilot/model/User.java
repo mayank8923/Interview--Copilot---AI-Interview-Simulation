@@ -10,8 +10,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -45,6 +48,15 @@ public class User {
     private Integer yearsOfExperience; // e.g. 3
     private String currentYear; // e.g. "3rd Year"
     private String branch; // e.g. "Computer Science"
+
+    // Streak & Activity Tracking
+    private int currentStreak;
+    private int longestStreak;
+    private LocalDate lastActiveDate;
+    private int totalActiveDays;
+
+    @Builder.Default
+    private Map<String, Integer> activityCalendar = new HashMap<>();
 
     private boolean isEmailVerified;
     private String emailVerificationCode;

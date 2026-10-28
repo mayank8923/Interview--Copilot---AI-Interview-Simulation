@@ -37,7 +37,7 @@ const RegisterPage = () => {
     
     if (score <= 2) return { score: 1, label: 'Weak', color: 'bg-rose-500', textColor: 'text-rose-600' };
     if (score === 3) return { score: 2, label: 'Fair', color: 'bg-amber-500', textColor: 'text-amber-600' };
-    if (score === 4) return { score: 3, label: 'Good', color: 'bg-indigo-500', textColor: 'text-indigo-600' };
+    if (score === 4) return { score: 3, label: 'Good', color: 'bg-orange-500', textColor: 'text-orange-600' };
     return { score: 4, label: 'Strong', color: 'bg-emerald-500', textColor: 'text-emerald-600' };
   };
 
@@ -78,13 +78,13 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-800 p-8 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 transition-colors">
+    <div className="min-h-[80vh] flex items-center justify-center bg-[#fbf9f6] dark:bg-[#0c0d0f] py-12 px-4 sm:px-6 lg:px-8 transition-colors">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-[#131418] p-8 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-800 transition-colors">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="mt-4 text-center text-3xl font-extrabold text-stone-900 dark:text-white tracking-tight">
             Create your account
           </h2>
-          <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-2 text-center text-sm text-stone-600 dark:text-stone-400">
             Tell us about your background so the AI can tailor your interviews.
           </p>
         </div>
@@ -238,16 +238,22 @@ const RegisterPage = () => {
             <Button
               type="submit"
               variant="primary"
-              className="w-full flex justify-center py-2 px-4"
+              className="w-full flex justify-center py-2.5 px-4 font-bold"
               disabled={isLoading}
             >
               <UserPlus className="w-5 h-5 mr-2" />
               {isLoading ? 'Creating account...' : 'Create account'}
             </Button>
+            <p className="text-[11px] text-center text-stone-500 dark:text-stone-400 mt-3">
+              By creating an account, you agree to our{' '}
+              <Link to="/privacy" className="underline hover:text-amber-500 transition-colors">
+                Privacy Policy
+              </Link>.
+            </p>
           </div>
           
-          <div className="mt-4 text-center text-sm text-slate-600 dark:text-slate-400">
-            Already have an account? <Link to="/login" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-medium">Sign in</Link>
+          <div className="mt-4 text-center text-sm text-stone-600 dark:text-stone-400">
+            Already have an account? <Link to="/login" className="text-amber-600 dark:text-amber-400 hover:text-amber-500 font-semibold">Sign in</Link>
           </div>
         </form>
       </div>

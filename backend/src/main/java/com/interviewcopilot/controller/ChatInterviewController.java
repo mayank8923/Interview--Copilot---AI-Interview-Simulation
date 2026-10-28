@@ -23,7 +23,12 @@ public class ChatInterviewController {
             Authentication authentication,
             @Valid @RequestBody StartChatRequest request) {
         com.interviewcopilot.security.CustomUserDetails userDetails = (com.interviewcopilot.security.CustomUserDetails) authentication.getPrincipal();
-        ChatInterviewSession session = chatInterviewService.startSession(userDetails.getId(), request.getTopic()).block();
+        ChatInterviewSession session = chatInterviewService.startSession(
+                userDetails.getId(), 
+                request.getTopic(), 
+                request.getPersona(), 
+                request.isUseResume()
+        ).block();
         return ResponseEntity.ok(ApiResponse.ok(session));
     }
 
@@ -32,6 +37,12 @@ public class ChatInterviewController {
             @PathVariable String id,
             @Valid @RequestBody ChatMessageRequest request) {
         ChatInterviewSession session = chatInterviewService.sendMessage(id, request.getContent()).block();
+        return ResponseEntity.ok(ApiResponse.ok(session));
+    }
+
+    @PostMapping("/{id}/conclude")
+    public ResponseEntity<ApiResponse<ChatInterviewSession>> concludeChat(@PathVariable String id) {
+        ChatInterviewSession session = chatInterviewService.concludeSession(id).block();
         return ResponseEntity.ok(ApiResponse.ok(session));
     }
 

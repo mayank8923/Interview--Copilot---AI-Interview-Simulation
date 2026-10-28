@@ -15,11 +15,11 @@ export const Button = ({
   const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
-    primary: 'text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 focus:ring-indigo-500 shadow-sm hover:shadow rounded-xl',
-    secondary: 'text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 focus:ring-slate-400 rounded-xl',
-    outline: 'text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 focus:ring-slate-400 rounded-xl',
+    primary: 'text-stone-950 font-bold bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:via-amber-400 hover:to-orange-400 active:from-amber-600 active:to-orange-600 focus:ring-amber-500 shadow-sm shadow-amber-500/25 rounded-xl transition-all',
+    secondary: 'text-stone-800 dark:text-stone-200 bg-stone-100 dark:bg-[#1a1b20] hover:bg-stone-200 dark:hover:bg-[#23242b] border border-stone-200 dark:border-stone-800 focus:ring-amber-500 rounded-xl',
+    outline: 'text-stone-800 dark:text-stone-200 border border-stone-300 dark:border-stone-800 bg-transparent hover:bg-stone-100 dark:hover:bg-[#1a1b20] focus:ring-amber-500 rounded-xl',
     danger: 'text-white bg-rose-600 hover:bg-rose-700 active:bg-rose-800 focus:ring-rose-500 rounded-xl',
-    ghost: 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg',
+    ghost: 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-[#1a1b20] rounded-lg',
   };
 
   const sizes = {

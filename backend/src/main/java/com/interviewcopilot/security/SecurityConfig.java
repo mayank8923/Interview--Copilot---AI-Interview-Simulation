@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/api/v1/health").permitAll()
                 .requestMatchers("/api/v1/questions/**").permitAll()
+                .requestMatchers("/api/v1/practice/**").permitAll()
+                .requestMatchers("/api/v1/code/**").permitAll()
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers

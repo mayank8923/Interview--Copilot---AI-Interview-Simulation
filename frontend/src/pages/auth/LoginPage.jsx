@@ -23,16 +23,16 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-800 p-8 rounded-xl shadow-md border border-slate-100 dark:border-slate-700 transition-colors">
+    <div className="min-h-[80vh] flex items-center justify-center bg-[#fbf9f6] dark:bg-[#0c0d0f] py-12 px-4 sm:px-6 lg:px-8 transition-colors">
+      <div className="max-w-md w-full space-y-8 bg-white dark:bg-[#131418] p-8 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-800 transition-colors">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="mt-4 text-center text-3xl font-extrabold text-stone-900 dark:text-white tracking-tight">
             Sign in to your account
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4">
+            <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4 rounded-r-lg">
               <p className="text-red-700 dark:text-red-400 text-sm">{error}</p>
             </div>
           )}
@@ -43,7 +43,7 @@ const LoginPage = () => {
                 name="email"
                 type="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2.5 border border-stone-300 dark:border-stone-700 placeholder-stone-400 bg-white dark:bg-[#101114] text-stone-900 dark:text-white rounded-t-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -55,7 +55,7 @@ const LoginPage = () => {
                 name="password"
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2.5 border border-stone-300 dark:border-stone-700 placeholder-stone-400 bg-white dark:bg-[#101114] text-stone-900 dark:text-white rounded-b-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -67,16 +67,16 @@ const LoginPage = () => {
             <Button
               type="submit"
               variant="primary"
-              className="w-full flex justify-center py-2 px-4"
+              className="w-full flex justify-center py-2.5 px-4 font-bold"
               disabled={isLoading}
             >
-              <LogIn className="w-5 h-5 mr-2" />
+              <LogIn className="w-4 h-4 mr-2" />
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
           </div>
           
-          <div className="mt-4 text-center text-sm text-slate-600 dark:text-slate-400">
-            Or <Link to="/register" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-medium">register for a new account</Link>
+          <div className="mt-4 text-center text-sm text-stone-600 dark:text-stone-400">
+            Or <Link to="/register" className="text-amber-600 dark:text-amber-400 hover:text-amber-500 font-semibold">register for a new account</Link>
           </div>
         </form>
       </div>

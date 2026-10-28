@@ -51,10 +51,10 @@ export const Dropzone = ({ onUpload, loading }) => {
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-2 border-dashed rounded-2xl p-12 text-center transition-colors flex flex-col items-center justify-center cursor-pointer ${
+          className={`border-2 border-dashed rounded-3xl p-10 text-center transition-all flex flex-col items-center justify-center cursor-pointer ${
             isDragActive 
-              ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10' 
-              : 'border-slate-300 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 bg-white dark:bg-slate-800'
+              ? 'border-amber-500 bg-amber-500/10 dark:bg-amber-500/10' 
+              : 'border-stone-200 dark:border-stone-800 hover:border-amber-500/50 dark:hover:border-amber-500/50 bg-white dark:bg-[#131418]'
           }`}
           onClick={() => document.getElementById('file-upload').click()}
         >
@@ -65,33 +65,41 @@ export const Dropzone = ({ onUpload, loading }) => {
             className="hidden"
             onChange={handleFileChange}
           />
-          <UploadCloud className={`w-12 h-12 mb-4 ${isDragActive ? 'text-indigo-500' : 'text-slate-400'}`} />
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-            Upload your Resume
+          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4">
+            <UploadCloud className="w-7 h-7" />
+          </div>
+          <h3 className="text-base sm:text-lg font-bold text-stone-900 dark:text-white mb-1.5">
+            Upload your Resume (PDF)
           </h3>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <p className="text-stone-500 dark:text-stone-400 text-xs sm:text-sm">
             Drag & drop your PDF file here, or click to browse
           </p>
-          <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">Maximum file size: 5MB</p>
+          <p className="text-[11px] text-stone-400 dark:text-stone-500 mt-2">Maximum file size: 5MB</p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center">
-          <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-full flex items-center justify-center mb-4">
+        <div className="bg-white dark:bg-[#131418] rounded-3xl border border-stone-200 dark:border-stone-800 p-6 flex flex-col items-center shadow-sm">
+          <div className="w-16 h-16 bg-amber-500/15 text-amber-500 rounded-2xl flex items-center justify-center mb-4">
             <FileIcon className="w-8 h-8" />
           </div>
-          <h3 className="font-semibold text-slate-900 dark:text-white line-clamp-1 max-w-[250px]">
+          <h3 className="font-bold text-stone-900 dark:text-white line-clamp-1 max-w-[250px]">
             {selectedFile.name}
           </h3>
-          <p className="text-sm text-slate-500 mb-6">
+          <p className="text-xs text-stone-500 mb-5">
             {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
           </p>
           
           <div className="flex gap-3 w-full sm:w-auto">
-            <Button variant="outline" onClick={() => setSelectedFile(null)} disabled={loading}>
+            <Button variant="outline" size="sm" onClick={() => setSelectedFile(null)} disabled={loading}>
               Change File
             </Button>
-            <Button onClick={handleSubmit} disabled={loading} icon={loading ? Loader2 : null} className={loading ? '[&>svg]:animate-spin' : ''}>
-              {loading ? 'Analyzing...' : 'Analyze Match'}
+            <Button 
+              size="sm"
+              onClick={handleSubmit} 
+              disabled={loading} 
+              icon={loading ? Loader2 : null} 
+              className={`bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-stone-950 font-bold shadow-sm ${loading ? '[&>svg]:animate-spin' : ''}`}
+            >
+              {loading ? 'AI Analyzing...' : 'Analyze Match'}
             </Button>
           </div>
         </div>

@@ -25,6 +25,8 @@ public class DataSeeder implements ApplicationRunner {
 
         for (com.interviewcopilot.model.Question q : all) {
             String title = q.getTitle();
+            if (title == null) continue; // Skip corrupted questions with no title
+            
             // Remove " (Company)" from the end of the title if it exists
             if (title.matches(".* \\(.*\\)$")) {
                 title = title.substring(0, title.lastIndexOf(" ("));

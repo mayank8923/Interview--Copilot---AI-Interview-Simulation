@@ -24,7 +24,11 @@ public class ChatInterviewSession {
     private String userId;
     private String status; // IN_PROGRESS, COMPLETED
     private String topic;
+    private String persona; // FAANG Bar Raiser, Supportive Mentor, HR Talent Partner
+    private boolean resumeTailored;
     
+    private ChatEvaluation feedback;
+
     @Builder.Default
     private List<ChatMessage> messages = new ArrayList<>();
     

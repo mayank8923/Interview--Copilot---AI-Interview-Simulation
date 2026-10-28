@@ -7,5 +7,8 @@ import lombok.Data;
 public class StartChatRequest {
     @NotBlank(message = "Topic is required")
     private String topic;
+
+    private String persona;
+    private boolean useResume;
 }
 

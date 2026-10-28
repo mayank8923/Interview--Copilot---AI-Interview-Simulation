@@ -50,6 +50,7 @@ public class ResumeController {
             User user = userRepository.findById(userId).orElseThrow();
             
             ResumeAnalysis analysis = aiEvaluationService.analyzeResume(userId, user.getTargetRole(), extractedText).block();
+            analysis.setRawResumeText(extractedText);
             ResumeAnalysis saved = resumeAnalysisRepository.save(analysis);
             return ResponseEntity.ok(ApiResponse.ok("Resume analyzed successfully", saved));
 
